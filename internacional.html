@@ -1,0 +1,1956 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fornecedores · SICX</title>
+  <meta name="description" content="Gestão de fornecedores internacionais SICX — mineração, agronegócio, metais, energia e mais com métricas de lotes e operações." />
+  <meta name="theme-color" content="#0A0A0A" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #0A0A0A;
+      --paper: #FAFAFA;
+      --white: #FFFFFF;
+      --muted: #666666;
+      --muted-2: #999999;
+      --line: #EAEAEA;
+      --line-2: #F0F0F0;
+      --accent: #2563EB;
+      --accent-600: #1D4ED8;
+      --accent-soft: #EFF4FF;
+      --success: #059669;
+      --success-soft: #ECFDF5;
+      --warning: #D97706;
+      --warning-soft: #FFFBEB;
+      --danger: #DC2626;
+      --danger-soft: #FEF2F2;
+      --sidebar-w: 240px;
+      --header-h: 64px;
+
+      --seg-mining: #D97706;   --seg-mining-soft: #FEF3C7;
+      --seg-agro: #059669;     --seg-agro-soft: #D1FAE5;
+      --seg-metals: #475569;   --seg-metals-soft: #E2E8F0;
+      --seg-energy: #CA8A04;   --seg-energy-soft: #FEF9C3;
+      --seg-chem: #7C3AED;     --seg-chem-soft: #EDE9FE;
+      --seg-tech: #2563EB;     --seg-tech-soft: #DBEAFE;
+      --seg-food: #E11D48;     --seg-food-soft: #FFE4E6;
+      --seg-textile: #0891B2;  --seg-textile-soft: #CFFAFE;
+    }
+
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    ::selection { background: var(--accent); color: #fff; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; font-size: inherit; }
+    ul { list-style: none; }
+    table { border-collapse: collapse; width: 100%; }
+    img, svg { display: block; max-width: 100%; }
+
+    .layout { display: grid; grid-template-columns: var(--sidebar-w) 1fr; min-height: 100vh; }
+
+    /* ═══════════ SIDEBAR ═══════════ */
+    .sidebar {
+      background: var(--ink); color: #fff;
+      display: flex; flex-direction: column;
+      position: sticky; top: 0; height: 100vh; overflow-y: auto;
+    }
+    .sidebar-brand {
+      height: var(--header-h); display: flex; align-items: center;
+      padding: 0 24px; border-bottom: 1px solid rgba(255,255,255,0.08); flex-shrink: 0;
+    }
+    .sidebar-brand .logo { font-size: 1.125rem; font-weight: 800; letter-spacing: -0.03em; color: #fff; }
+    .sidebar-section { padding: 16px 12px 8px; }
+    .sidebar-section-label {
+      font-size: 0.6875rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.08em; color: rgba(255,255,255,0.4);
+      padding: 8px 12px; margin-bottom: 4px;
+    }
+    .sidebar-nav { display: flex; flex-direction: column; gap: 2px; }
+    .sidebar-nav a {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 12px; border-radius: 8px;
+      font-size: 0.8125rem; font-weight: 500;
+      color: rgba(255,255,255,0.7);
+      transition: background 150ms ease, color 150ms ease;
+    }
+    .sidebar-nav a:hover { background: rgba(255,255,255,0.06); color: #fff; }
+    .sidebar-nav a.active { background: rgba(37,99,235,0.18); color: #fff; }
+    .sidebar-nav a.active svg { color: #60A5FA; }
+    .sidebar-nav svg { flex-shrink: 0; opacity: 0.9; }
+    .sidebar-nav .nav-badge {
+      margin-left: auto; font-size: 0.6875rem; font-weight: 600;
+      background: rgba(255,255,255,0.1); color: #fff;
+      padding: 1px 7px; border-radius: 999px;
+    }
+    .sidebar-nav a.active .nav-badge { background: var(--accent); color: #fff; }
+    .sidebar-footer {
+      margin-top: auto; padding: 16px 12px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .user-card {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px; border-radius: 10px;
+      transition: background 150ms ease; cursor: pointer;
+    }
+    .user-card:hover { background: rgba(255,255,255,0.06); }
+    .avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, #2563EB, #7C3AED);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .user-info { flex: 1; min-width: 0; }
+    .user-name {
+      font-size: 0.8125rem; font-weight: 600; color: #fff;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .user-role {
+      font-size: 0.6875rem; color: rgba(255,255,255,0.5);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    /* ═══════════ MAIN ═══════════ */
+    .main { min-width: 0; }
+
+    .topbar {
+      height: var(--header-h);
+      background: rgba(250,250,250,0.85);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+      display: flex; align-items: center; gap: 16px;
+      padding: 0 24px; position: sticky; top: 0; z-index: 30;
+    }
+    .topbar-title { font-size: 0.875rem; font-weight: 600; color: var(--ink); }
+    .topbar-search { flex: 1; max-width: 420px; position: relative; }
+    .topbar-search input {
+      width: 100%; height: 36px;
+      background: var(--white); border: 1px solid var(--line);
+      border-radius: 8px; padding: 0 12px 0 36px;
+      font-size: 0.8125rem; font-family: inherit; color: var(--ink);
+      transition: border-color 150ms ease;
+    }
+    .topbar-search input::placeholder { color: var(--muted-2); }
+    .topbar-search input:focus { outline: none; border-color: var(--accent); }
+    .topbar-search svg {
+      position: absolute; left: 12px; top: 50%;
+      transform: translateY(-50%); color: var(--muted-2); pointer-events: none;
+    }
+    .topbar-actions { display: flex; align-items: center; gap: 4px; margin-left: auto; }
+    .icon-btn {
+      position: relative; width: 36px; height: 36px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted); transition: background 150ms ease, color 150ms ease;
+    }
+    .icon-btn:hover { background: rgba(10,10,10,0.05); color: var(--ink); }
+    .icon-btn .dot {
+      position: absolute; top: 8px; right: 8px;
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--danger); border: 1.5px solid var(--paper);
+    }
+
+    .content { padding: 24px; max-width: 1600px; margin: 0 auto; }
+    @media (min-width: 1024px) { .content { padding: 32px; } }
+
+    .page-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 16px; flex-wrap: wrap; margin-bottom: 24px;
+    }
+    .page-header h1 {
+      font-size: 1.75rem; font-weight: 800;
+      letter-spacing: -0.02em; line-height: 1.15;
+    }
+    .page-header p { margin-top: 4px; font-size: 0.875rem; color: var(--muted); }
+    .page-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      font-weight: 500; font-size: 0.8125rem; padding: 8px 16px;
+      border-radius: 8px; transition: all 150ms ease;
+      white-space: nowrap; line-height: 1.2; height: 36px;
+    }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-600); }
+    .btn-secondary { background: var(--white); color: var(--ink); border: 1px solid var(--line); }
+    .btn-secondary:hover { border-color: var(--ink); }
+    .btn-ghost { background: transparent; color: var(--muted); }
+    .btn-ghost:hover { background: rgba(10,10,10,0.05); color: var(--ink); }
+
+    /* KPI Strip */
+    .kpi-strip {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 1px; background: var(--line);
+      border: 1px solid var(--line); border-radius: 12px;
+      overflow: hidden; margin-bottom: 24px;
+    }
+    @media (min-width: 768px) { .kpi-strip { grid-template-columns: repeat(4, 1fr); } }
+    @media (min-width: 1280px) { .kpi-strip { grid-template-columns: repeat(6, 1fr); } }
+    .kpi-strip-item { background: var(--white); padding: 20px; }
+    .kpi-strip-label {
+      font-size: 0.6875rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--muted); margin-bottom: 8px;
+    }
+    .kpi-strip-value {
+      font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1;
+    }
+    .kpi-strip-value .unit { font-size: 0.875rem; font-weight: 600; color: var(--muted); margin-left: 2px; }
+    .kpi-strip-value .currency { font-size: 0.75rem; font-weight: 600; color: var(--muted); margin-right: 2px; }
+    .kpi-strip-sub { margin-top: 4px; font-size: 0.6875rem; color: var(--muted); }
+    .kpi-strip-sub .delta-up { color: var(--success); font-weight: 600; }
+    .kpi-strip-sub .delta-warn { color: var(--warning); font-weight: 600; }
+
+    /* Operational metrics cards */
+    .ops-grid {
+      display: grid; grid-template-columns: 1fr;
+      gap: 12px; margin-bottom: 8px;
+    }
+    @media (min-width: 640px) { .ops-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) { .ops-grid { grid-template-columns: repeat(4, 1fr); } }
+
+    .ops-card {
+      background: var(--white); border: 1px solid var(--line);
+      border-radius: 12px; padding: 16px;
+    }
+    .ops-card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .ops-card-label {
+      font-size: 0.6875rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--muted);
+    }
+    .ops-icon {
+      width: 28px; height: 28px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--accent-soft); color: var(--accent);
+    }
+    .ops-icon.success { background: var(--success-soft); color: var(--success); }
+    .ops-icon.warning { background: var(--warning-soft); color: var(--warning); }
+    .ops-value {
+      font-size: 1.375rem; font-weight: 800;
+      letter-spacing: -0.02em; line-height: 1.1;
+    }
+    .ops-value .unit { font-size: 0.75rem; font-weight: 600; color: var(--muted); }
+    .ops-sub {
+      margin-top: 6px; font-size: 0.6875rem; color: var(--muted);
+      display: flex; align-items: center; gap: 4px;
+    }
+    .ops-sub .delta-up { color: var(--success); font-weight: 600; }
+
+    /* Section title */
+    .section-title-wrap {
+      display: flex; align-items: center; justify-content: space-between;
+      margin: 32px 0 16px; gap: 12px; flex-wrap: wrap;
+    }
+    .section-title {
+      font-size: 1rem; font-weight: 700; color: var(--ink);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-title .count {
+      font-size: 0.6875rem; font-weight: 600;
+      background: var(--paper); color: var(--muted);
+      padding: 2px 8px; border-radius: 999px;
+      border: 1px solid var(--line);
+    }
+    .section-subtitle { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+
+    /* Segment grid */
+    .segment-grid {
+      display: grid; grid-template-columns: repeat(1, 1fr);
+      gap: 12px; margin-bottom: 8px;
+    }
+    @media (min-width: 640px) { .segment-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) { .segment-grid { grid-template-columns: repeat(4, 1fr); } }
+    .segment-card {
+      background: var(--white); border: 1px solid var(--line);
+      border-radius: 12px; padding: 16px;
+      transition: all 150ms ease; cursor: pointer;
+      position: relative; overflow: hidden;
+    }
+    .segment-card::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: var(--seg-color, var(--accent));
+      opacity: 0; transition: opacity 150ms ease;
+    }
+    .segment-card:hover { border-color: var(--seg-color, var(--accent)); }
+    .segment-card:hover::before { opacity: 1; }
+    .segment-card.active {
+      border-color: var(--seg-color, var(--accent));
+      box-shadow: 0 0 0 1px var(--seg-color, var(--accent));
+    }
+    .segment-card.active::before { opacity: 1; }
+    .segment-icon {
+      width: 36px; height: 36px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--seg-soft, var(--accent-soft));
+      color: var(--seg-color, var(--accent));
+      margin-bottom: 12px;
+    }
+    .segment-name { font-size: 0.875rem; font-weight: 700; color: var(--ink); }
+    .segment-meta {
+      display: flex; align-items: baseline; gap: 6px;
+      margin-top: 6px; font-size: 0.6875rem; color: var(--muted);
+    }
+    .segment-count { font-size: 1.125rem; font-weight: 800; color: var(--ink); letter-spacing: -0.02em; }
+    .segment-value {
+      font-size: 0.6875rem; font-weight: 600; color: var(--seg-color, var(--accent));
+      margin-top: 4px;
+    }
+    .segment-bar {
+      height: 3px; background: var(--line); border-radius: 999px;
+      overflow: hidden; margin-top: 8px;
+    }
+    .segment-bar-fill {
+      height: 100%; background: var(--seg-color, var(--accent));
+      border-radius: 999px; transition: width 800ms cubic-bezier(0.22,1,0.36,1);
+    }
+
+    /* Regions */
+    .regions-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    @media (min-width: 768px) { .regions-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (min-width: 1024px) { .regions-grid { grid-template-columns: repeat(6, 1fr); } }
+    .region-card {
+      background: var(--white); border: 1px solid var(--line);
+      border-radius: 10px; padding: 14px; text-align: center;
+    }
+    .region-flag {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--paper); color: var(--muted); font-weight: 700;
+      font-size: 0.6875rem; margin-bottom: 8px;
+    }
+    .region-name { font-size: 0.75rem; font-weight: 600; color: var(--ink); }
+    .region-count { font-size: 1.125rem; font-weight: 800; color: var(--ink); letter-spacing: -0.02em; margin-top: 2px; }
+    .region-count .unit { font-size: 0.6875rem; font-weight: 500; color: var(--muted); }
+    .region-value { font-size: 0.625rem; color: var(--muted); margin-top: 2px; }
+
+    /* Toolbar */
+    .toolbar {
+      display: flex; align-items: center; gap: 8px;
+      flex-wrap: wrap; padding: 12px 16px;
+      background: var(--white); border: 1px solid var(--line);
+      border-radius: 12px 12px 0 0; border-bottom: none;
+    }
+    .filter-tabs {
+      display: inline-flex; background: var(--paper);
+      border-radius: 8px; padding: 3px; gap: 2px;
+      overflow-x: auto; max-width: 100%;
+    }
+    .filter-tab {
+      padding: 5px 10px; border-radius: 6px;
+      font-size: 0.75rem; font-weight: 500;
+      color: var(--muted); transition: all 150ms ease;
+      white-space: nowrap;
+    }
+    .filter-tab:hover { color: var(--ink); }
+    .filter-tab.active {
+      background: var(--white); color: var(--ink);
+      box-shadow: 0 1px 2px rgba(10,10,10,0.06);
+    }
+    .toolbar-search { flex: 1; min-width: 200px; position: relative; }
+    .toolbar-search input {
+      width: 100%; height: 32px;
+      border: 1px solid var(--line); border-radius: 6px;
+      padding: 0 10px 0 32px;
+      font-size: 0.75rem; font-family: inherit;
+    }
+    .toolbar-search input:focus { outline: none; border-color: var(--accent); }
+    .toolbar-search svg {
+      position: absolute; left: 10px; top: 50%;
+      transform: translateY(-50%); color: var(--muted-2); pointer-events: none;
+    }
+
+    /* Table */
+    .card {
+      background: var(--white); border: 1px solid var(--line);
+      border-radius: 12px; overflow: hidden;
+    }
+    .card.table-card { border-radius: 0 0 12px 12px; border-top: none; }
+    .table-wrap { overflow-x: auto; }
+
+    .data-table { font-size: 0.8125rem; min-width: 1600px; }
+    .data-table th {
+      text-align: left; font-size: 0.6875rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--muted); padding: 10px 14px;
+      background: var(--paper); border-bottom: 1px solid var(--line);
+      white-space: nowrap;
+    }
+    .data-table th.numeric { text-align: right; }
+    .data-table td {
+      padding: 12px 14px; border-bottom: 1px solid var(--line-2);
+      color: var(--ink); vertical-align: middle;
+    }
+    .data-table td.numeric { text-align: right; font-variant-numeric: tabular-nums; }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tbody tr { transition: background 150ms ease; }
+    .data-table tbody tr:hover { background: #FCFCFC; }
+
+    .supplier-cell { display: flex; align-items: center; gap: 10px; min-width: 180px; }
+    .supplier-avatar-lg {
+      width: 32px; height: 32px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.6875rem; font-weight: 700; color: #fff;
+      flex-shrink: 0;
+    }
+    .supplier-name-lg { font-weight: 600; color: var(--ink); }
+    .supplier-code {
+      font-size: 0.6875rem; color: var(--muted);
+      font-family: 'SF Mono', ui-monospace, monospace;
+    }
+
+    .seg-tag {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 0.6875rem; font-weight: 600;
+      padding: 3px 8px; border-radius: 999px;
+      white-space: nowrap;
+    }
+    .seg-tag .dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+    .products-list {
+      display: flex; flex-wrap: wrap; gap: 4px; max-width: 220px;
+    }
+    .product-chip {
+      font-size: 0.625rem; font-weight: 500;
+      padding: 2px 7px; border-radius: 4px;
+      background: var(--paper); color: var(--ink);
+      border: 1px solid var(--line);
+      white-space: nowrap;
+    }
+
+    .origin-cell {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.75rem; color: var(--muted);
+    }
+    .country-code {
+      font-family: 'SF Mono', ui-monospace, monospace;
+      font-size: 0.625rem; font-weight: 700;
+      padding: 2px 5px; border-radius: 3px;
+      background: var(--paper); color: var(--ink);
+      border: 1px solid var(--line);
+    }
+
+    .metric-cell { line-height: 1.25; }
+    .metric-main {
+      font-weight: 700; color: var(--ink);
+      font-variant-numeric: tabular-nums; white-space: nowrap;
+    }
+    .metric-main .cur { font-size: 0.6875rem; color: var(--muted); font-weight: 500; margin-right: 2px; }
+    .metric-sub {
+      font-size: 0.625rem; color: var(--muted); margin-top: 2px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .lot-badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 0.625rem; font-weight: 600;
+      padding: 3px 7px; border-radius: 4px;
+      background: var(--paper); color: var(--ink);
+      border: 1px solid var(--line);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .incoterm-badge {
+      font-family: 'SF Mono', ui-monospace, monospace;
+      font-size: 0.6875rem; font-weight: 700;
+      padding: 3px 6px; border-radius: 4px;
+      background: var(--accent-soft); color: var(--accent);
+      border: 1px solid #DBEAFE;
+      white-space: nowrap;
+    }
+
+    .leadtime {
+      font-size: 0.75rem; font-weight: 600;
+      color: var(--ink); white-space: nowrap;
+    }
+    .leadtime.warn { color: var(--warning); }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 0.6875rem; font-weight: 600;
+      padding: 3px 8px; border-radius: 999px; white-space: nowrap;
+    }
+    .badge-success { background: var(--success-soft); color: var(--success); }
+    .badge-warning { background: var(--warning-soft); color: var(--warning); }
+    .badge-danger { background: var(--danger-soft); color: var(--danger); }
+    .badge-info { background: var(--accent-soft); color: var(--accent); }
+    .badge-neutral { background: #F3F4F6; color: var(--muted); }
+    .badge-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+    .certs-cell { display: flex; gap: 3px; }
+    .cert-icon {
+      width: 22px; height: 22px; border-radius: 5px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.5rem; font-weight: 800;
+      border: 1px solid var(--line); color: var(--muted);
+      background: var(--white); cursor: help;
+    }
+    .cert-icon.valid { border-color: var(--success); color: var(--success); background: var(--success-soft); }
+
+    .actions-cell { display: flex; gap: 4px; justify-content: flex-end; }
+    .row-action {
+      width: 26px; height: 26px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--muted); transition: all 150ms ease;
+    }
+    .row-action:hover { background: var(--paper); color: var(--ink); }
+
+    /* Featured suppliers */
+    .featured-grid {
+      display: grid; grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    @media (min-width: 768px) { .featured-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1280px) { .featured-grid { grid-template-columns: repeat(4, 1fr); } }
+
+    .featured-card {
+      background: var(--white); border: 1px solid var(--line);
+      border-radius: 12px; padding: 18px;
+      transition: all 150ms ease;
+    }
+    .featured-card:hover { border-color: var(--muted-2); }
+
+    .featured-head {
+      display: flex; align-items: center; gap: 10px;
+      padding-bottom: 14px; border-bottom: 1px solid var(--line-2);
+      margin-bottom: 12px;
+    }
+    .featured-avatar {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 800; color: #fff;
+      flex-shrink: 0;
+    }
+    .featured-name { font-size: 0.875rem; font-weight: 700; line-height: 1.2; }
+    .featured-country { font-size: 0.6875rem; color: var(--muted); margin-top: 2px; }
+
+    .featured-highlight {
+      background: var(--paper); border-radius: 8px;
+      padding: 10px 12px; margin-bottom: 10px;
+    }
+    .featured-highlight-label {
+      font-size: 0.625rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.05em; color: var(--muted); margin-bottom: 2px;
+    }
+    .featured-highlight-value {
+      font-size: 1rem; font-weight: 800; color: var(--ink);
+      font-variant-numeric: tabular-nums;
+    }
+    .featured-highlight-value .cur { font-size: 0.75rem; font-weight: 600; color: var(--muted); margin-right: 2px; }
+
+    .featured-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 5px 0; font-size: 0.75rem;
+      gap: 8px;
+    }
+    .featured-row .label { color: var(--muted); white-space: nowrap; }
+    .featured-row .value {
+      font-weight: 600; color: var(--ink);
+      font-variant-numeric: tabular-nums;
+      text-align: right;
+    }
+
+    /* Compliance matrix */
+    .matrix-card { padding: 0; }
+    .matrix-grid {
+      display: grid; grid-template-columns: 180px repeat(6, 1fr);
+      font-size: 0.75rem; overflow-x: auto;
+    }
+    .matrix-grid > div { padding: 10px 12px; border-bottom: 1px solid var(--line-2); }
+    .matrix-header {
+      background: var(--paper); font-weight: 600;
+      font-size: 0.6875rem; text-transform: uppercase;
+      letter-spacing: 0.05em; color: var(--muted);
+      text-align: center;
+    }
+    .matrix-header:first-child { text-align: left; }
+    .matrix-label { font-weight: 500; color: var(--ink); }
+    .matrix-cell {
+      text-align: center; color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+    .matrix-cell strong { color: var(--ink); font-weight: 700; }
+    .matrix-cell .pct-bar {
+      display: inline-block; width: 40px; height: 3px;
+      background: var(--line); border-radius: 999px;
+      vertical-align: middle; margin-right: 6px; overflow: hidden;
+    }
+    .matrix-cell .pct-fill { display: block; height: 100%; border-radius: 999px; }
+
+    /* Footer */
+    .footer-info {
+      margin-top: 40px; padding-top: 24px;
+      border-top: 1px solid var(--line);
+      display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: 12px;
+      font-size: 0.75rem; color: var(--muted);
+    }
+    .footer-info a {
+      color: var(--ink); font-weight: 600;
+      text-decoration: underline; text-decoration-color: var(--line);
+      text-underline-offset: 3px;
+    }
+    .footer-info a:hover { text-decoration-color: var(--accent); }
+
+    .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; }
+    .status-dot.online { background: var(--success); }
+
+    /* Mobile */
+    @media (max-width: 1023px) {
+      :root { --sidebar-w: 0px; }
+      .layout { grid-template-columns: 1fr; }
+      .sidebar {
+        position: fixed; top: 0; left: 0; width: 240px;
+        transform: translateX(-100%);
+        transition: transform 250ms ease; z-index: 60;
+      }
+      .sidebar.open { transform: translateX(0); box-shadow: 4px 0 24px rgba(0,0,0,0.15); }
+      .sidebar-overlay {
+        display: none; position: fixed; inset: 0;
+        background: rgba(0,0,0,0.4); z-index: 55;
+      }
+      .sidebar-overlay.open { display: block; }
+    }
+    @media (min-width: 1024px) {
+      .mobile-topbar-btn { display: none; }
+      .sidebar-overlay { display: none !important; }
+    }
+    .mobile-topbar-btn {
+      display: inline-flex; width: 36px; height: 36px;
+      align-items: center; justify-content: center;
+      border-radius: 8px; color: var(--ink);
+    }
+
+    /* Reveal */
+    .reveal { opacity: 0; transform: translateY(8px); transition: opacity 500ms ease, transform 500ms ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition-duration: 0.01ms !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ═══════════ SIDEBAR ═══════════ -->
+  <aside class="sidebar" id="sidebar" aria-label="Navegação lateral">
+    <div class="sidebar-brand"><a href="/" class="logo">SICX</a></div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Visão geral</div>
+      <nav class="sidebar-nav">
+        <a href="dashboard.html">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+          Dashboard
+        </a>
+        <a href="#pedidos">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+          Pedidos <span class="nav-badge">12</span>
+        </a>
+        <a href="#catalogo">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 9.4 7.5 4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+          Catálogo
+        </a>
+        <a href="#pricing">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="8" y1="10" x2="10" y2="10"/><line x1="14" y1="10" x2="16" y2="10"/><line x1="8" y1="14" x2="10" y2="14"/><line x1="14" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="10" y2="18"/><line x1="14" y1="18" x2="16" y2="18"/></svg>
+          Precificação
+        </a>
+      </nav>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Operações</div>
+      <nav class="sidebar-nav">
+        <a href="fornecedores.html" class="active">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          Fornecedores <span class="nav-badge">128</span>
+        </a>
+        <a href="#logistica">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          Logística
+        </a>
+        <a href="#compliance">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Compliance
+        </a>
+        <a href="#auditoria">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+          Auditoria
+        </a>
+      </nav>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Sistema</div>
+      <nav class="sidebar-nav">
+        <a href="#integracoes">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+          Integrações
+        </a>
+        <a href="#configuracoes">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Configurações
+        </a>
+      </nav>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="avatar">RC</div>
+        <div class="user-info">
+          <div class="user-name">Ricardo Costa</div>
+          <div class="user-role">Admin · Laboratory of K</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- ═══════════ MAIN ═══════════ -->
+  <div class="main">
+
+    <header class="topbar">
+      <button class="mobile-topbar-btn" id="mobileMenuBtn" aria-label="Abrir menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>
+      </button>
+      <span class="topbar-title">Fornecedores</span>
+      <div class="topbar-search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="search" placeholder="Buscar fornecedores, commodities, países..." aria-label="Buscar fornecedores" />
+      </div>
+      <div class="topbar-actions">
+        <button class="icon-btn" aria-label="Notificações">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <span class="dot"></span>
+        </button>
+        <button class="icon-btn" aria-label="Ajuda">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="content">
+
+      <!-- Page header -->
+      <div class="page-header reveal">
+        <div>
+          <h1>Fornecedores</h1>
+          <p>Gestão de <strong style="color: var(--ink);">128 fornecedores</strong> · métricas de lotes, operações e volumes</p>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-secondary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Exportar
+          </button>
+          <button class="btn btn-primary">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Novo Fornecedor
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI strip -->
+      <div class="kpi-strip reveal">
+        <div class="kpi-strip-item">
+          <div class="kpi-strip-label">Fornecedores</div>
+          <div class="kpi-strip-value">128</div>
+          <div class="kpi-strip-sub"><span class="delta-up">↑ +12</span> vs. mês anterior</div>
+        </div>
+        <div class="kpi-strip-item">
+          <div class="kpi-strip-label">Volume Total / Mês</div>
+          <div class="kpi-strip-value"><span class="currency">R$</span>4,82<span class="unit">B</span></div>
+          <div class="kpi-strip-sub"><span class="delta-up">↑ 14,3%</span> MoM</div>
+        </div>
+        <div class="kpi-strip-item">
+          <div class="kpi-strip-label">Lotes / Mês</div>
+          <div class="kpi-strip-value">1.842</div>
+          <div class="kpi-strip-sub">média de 14,4 lotes/fornecedor</div>
+        </div>
+        <div class="kpi-strip-item">
+          <div class="kpi-strip-label">Valor Médio / Lote</div>
+          <div class="kpi-strip-value"><span class="currency">R$</span>2,62<span class="unit">M</span></div>
+          <div class="kpi-strip-sub"><span class="delta-up">↑ 6,8%</span> MoM</div>
+        </div>
+        <div class="kpi-strip-item">
+          <div class="kpi-strip-label">Ticket Médio / Operação</div>
+          <div class="kpi-strip-value"><span class="currency">R$</span>182<span class="unit">k</span></div>
+          <div class="kpi-strip-sub">por contrato</div>
+        </div>
+        <div class="kpi-strip-item">
+          <div class="kpi-strip-label">Compliance OK</div>
+          <div class="kpi-strip-value">94<span class="unit">%</span></div>
+          <div class="kpi-strip-sub">120 de 128 fornecedores</div>
+        </div>
+      </div>
+
+      <!-- Operational metrics -->
+      <div class="section-title-wrap reveal">
+        <div>
+          <div class="section-title">Métricas operacionais · mês atual</div>
+          <div class="section-subtitle">Volumes, lotes e valores consolidados</div>
+        </div>
+      </div>
+
+      <div class="ops-grid reveal">
+        <div class="ops-card">
+          <div class="ops-card-header">
+            <span class="ops-card-label">Quantidade Total</span>
+            <div class="ops-icon success">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            </div>
+          </div>
+          <div class="ops-value">12,4<span class="unit">M ton</span></div>
+          <div class="ops-sub"><span class="delta-up">↑ 8,2%</span> vs. mês anterior</div>
+        </div>
+
+        <div class="ops-card">
+          <div class="ops-card-header">
+            <span class="ops-card-label">Lotes Recebidos</span>
+            <div class="ops-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18M15 3v18"/></svg>
+            </div>
+          </div>
+          <div class="ops-value">1.842</div>
+          <div class="ops-sub"><span class="delta-up">↑ 142</span> novos lotes</div>
+        </div>
+
+        <div class="ops-card">
+          <div class="ops-card-header">
+            <span class="ops-card-label">Valor Total Negociado</span>
+            <div class="ops-icon">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+          </div>
+          <div class="ops-value"><span class="unit" style="margin-right:2px;">R$</span>4,82<span class="unit">B</span></div>
+          <div class="ops-sub"><span class="delta-up">↑ 14,3%</span> vs. mês anterior</div>
+        </div>
+
+        <div class="ops-card">
+          <div class="ops-card-header">
+            <span class="ops-card-label">Lead Time Médio</span>
+            <div class="ops-icon warning">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+          </div>
+          <div class="ops-value">24<span class="unit">dias</span></div>
+          <div class="ops-sub">entre 18 e 42 dias</div>
+        </div>
+      </div>
+
+      <!-- Segments -->
+      <div class="section-title-wrap reveal">
+        <div>
+          <div class="section-title">
+            Segmentos de fornecimento
+            <span class="count">8</span>
+          </div>
+          <div class="section-subtitle">Clique em um segmento para filtrar · valor total de operação por segmento</div>
+        </div>
+      </div>
+
+      <div class="segment-grid reveal">
+        <div class="segment-card active" data-segment="mineracao" style="--seg-color: var(--seg-mining); --seg-soft: var(--seg-mining-soft);">
+          <div class="segment-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4 8.5 15.5"/><path d="M4 14l6 6"/><path d="M2 22l4-4"/></svg>
+          </div>
+          <div class="segment-name">Mineração</div>
+          <div class="segment-meta">
+            <span class="segment-count">25</span>
+            <span>fornecedores</span>
+          </div>
+          <div class="segment-value">R$ 1,82B / mês</div>
+          <div class="segment-bar"><div class="segment-bar-fill" style="width: 100%"></div></div>
+        </div>
+
+        <div class="segment-card" data-segment="agro" style="--seg-color: var(--seg-agro); --seg-soft: var(--seg-agro-soft);">
+          <div class="segment-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+          </div>
+          <div class="segment-name">Agronegócio</div>
+          <div class="segment-meta">
+            <span class="segment-count">22</span>
+            <span>fornecedores</span>
+          </div>
+          <div class="segment-value">R$ 1,24B / mês</div>
+          <div class="segment-bar"><div class="segment-bar-fill" style="width: 68%"></div></div>
+        </div>
+
+        <div class="segment-card" data-segment="metais" style="--seg-color: var(--seg-metals); --seg-soft: var(--seg-metals-soft);">
+          <div class="segment-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          </div>
+          <div class="segment-name">Metais & Siderurgia</div>
+          <div class="segment-meta">
+            <span class="segment-count">18</span>
+            <span>fornecedores</span>
+          </div>
+          <div class="segment-value">R$ 890M / mês</div>
+          <div class="segment-bar"><div class="segment-bar-fill" style="width: 49%"></div></div>
+        </div>
+
+        <div class="segment-card" data-segment="energia" style="--seg-color: var(--seg-energy); --seg-soft: var(--seg-energy-soft);">
+          <div class="segment-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+          <div class="segment-name">Energia</div>
+          <div class="segment-meta">
+            <span class="segment-count">15</span>
+            <span>fornecedores</span>
+          </div>
+          <div class="segment-value">R$ 540M / mês</div>
+          <div class="segment-bar"><div class="segment-bar-fill" style="width: 30%"></div></div>
+        </div>
+
+        <div class="segment-card" data-segment="eletronicos" style="--seg-color: var(--seg-tech); --seg-soft: var(--seg-tech-soft);">
+          <div class="segment-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 2v2M15 2v2M9 20v2M15 20v2M2 9h2M2 15h2M20 9h2M20 15h2"/></svg>
+          </div>
+          <div class="segment-name">Eletrônicos</div>
+          <div class="segment-meta">
+            <span class="segment-count">14</span>
+            <span>fornecedores</span>
+          </div>
+          <div class="segment-value">R$ 210M / mês</div>
+          <div class="segment-bar"><div class="segment-bar-fill" style="width: 12%"></div></div>
+        </div>
+
+        <div class="segment-card" data-segment="quimicos" style="--seg-color: var(--seg-chem); --seg-soft: var(--seg-chem-soft);">
+          <div class="segment-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.31"/><path d="M14 9.3V1.99"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/><path d="M5.52 16h12.96"/></svg>
+          </div>
+          <div class="segment-name">Químicos</div>
+          <div class="segment-meta">
+            <span class="segment-count">12</span>
+            <span>fornecedores</span>
+          </div>
+          <div class="segment-value">R$ 78M / mês</div>
+          <div class="segment-bar"><div class="segment-bar-fill" style="width: 4%"></div></div>
+        </div>
+
+        <div class="segment-card" data-segment="textil" style="--seg-color: var(--seg-textile); --seg-soft: var(--seg-textile-soft);">
+          <div class="segment-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg>
+          </div>
+          <div class="segment-name">Têxtil & Calçados</div>
+          <div class="segment-meta">
+            <span class="segment-count">12</span>
+            <span>fornecedores</span>
+          </div>
+          <div class="segment-value">R$ 42M / mês</div>
+          <div class="segment-bar"><div class="segment-bar-fill" style="width: 2%"></div></div>
+        </div>
+
+        <div class="segment-card" data-segment="alimentos" style="--seg-color: var(--seg-food); --seg-soft: var(--seg-food-soft);">
+          <div class="segment-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><path d="M9 14s1-2 3-2 3 2 3 2"/><path d="M9 18h6"/></svg>
+          </div>
+          <div class="segment-name">Alimentos</div>
+          <div class="segment-meta">
+            <span class="segment-count">10</span>
+            <span>fornecedores</span>
+          </div>
+          <div class="segment-value">R$ 16M / mês</div>
+          <div class="segment-bar"><div class="segment-bar-fill" style="width: 1%"></div></div>
+        </div>
+      </div>
+
+      <!-- Regions -->
+      <div class="section-title-wrap reveal">
+        <div>
+          <div class="section-title">Distribuição global</div>
+          <div class="section-subtitle">Origem geográfica · fornecedores e valor de operação</div>
+        </div>
+      </div>
+
+      <div class="regions-grid reveal">
+        <div class="region-card">
+          <div class="region-flag">AS</div>
+          <div class="region-name">Ásia</div>
+          <div class="region-count">42 <span class="unit">forn.</span></div>
+          <div class="region-value">R$ 1,42B / mês</div>
+        </div>
+        <div class="region-card">
+          <div class="region-flag">SA</div>
+          <div class="region-name">Am. do Sul</div>
+          <div class="region-count">38 <span class="unit">forn.</span></div>
+          <div class="region-value">R$ 1,84B / mês</div>
+        </div>
+        <div class="region-card">
+          <div class="region-flag">EU</div>
+          <div class="region-name">Europa</div>
+          <div class="region-count">24 <span class="unit">forn.</span></div>
+          <div class="region-value">R$ 820M / mês</div>
+        </div>
+        <div class="region-card">
+          <div class="region-flag">NA</div>
+          <div class="region-name">Am. do Norte</div>
+          <div class="region-count">14 <span class="unit">forn.</span></div>
+          <div class="region-value">R$ 590M / mês</div>
+        </div>
+        <div class="region-card">
+          <div class="region-flag">AF</div>
+          <div class="region-name">África</div>
+          <div class="region-count">6 <span class="unit">forn.</span></div>
+          <div class="region-value">R$ 102M / mês</div>
+        </div>
+        <div class="region-card">
+          <div class="region-flag">OC</div>
+          <div class="region-name">Oceania</div>
+          <div class="region-count">4 <span class="unit">forn.</span></div>
+          <div class="region-value">R$ 46M / mês</div>
+        </div>
+      </div>
+
+      <!-- Toolbar + Table -->
+      <div class="section-title-wrap reveal">
+        <div>
+          <div class="section-title">
+            Todos os fornecedores
+            <span class="count" id="visibleCount">128</span>
+          </div>
+          <div class="section-subtitle">Clique em um segmento acima para filtrar · valores em BRL</div>
+        </div>
+      </div>
+
+      <div class="toolbar reveal">
+        <div class="filter-tabs" role="tablist" id="filterTabs">
+          <button class="filter-tab active" data-filter="todos">Todos</button>
+          <button class="filter-tab" data-filter="mineracao">Mineração</button>
+          <button class="filter-tab" data-filter="agro">Agro</button>
+          <button class="filter-tab" data-filter="metais">Metais</button>
+          <button class="filter-tab" data-filter="energia">Energia</button>
+          <button class="filter-tab" data-filter="quimicos">Químicos</button>
+          <button class="filter-tab" data-filter="eletronicos">Eletrônicos</button>
+          <button class="filter-tab" data-filter="alimentos">Alimentos</button>
+          <button class="filter-tab" data-filter="textil">Têxtil</button>
+        </div>
+        <div class="toolbar-search">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="search" placeholder="Buscar fornecedor, commodity..." id="supplierSearch" aria-label="Buscar fornecedor" />
+        </div>
+      </div>
+
+      <div class="card table-card reveal">
+        <div class="table-wrap">
+          <table class="data-table" id="supplierTable">
+            <thead>
+              <tr>
+                <th>Fornecedor</th>
+                <th>Segmento</th>
+                <th>Commodity</th>
+                <th>Origem</th>
+                <th class="numeric">Qtd. Total/Mês</th>
+                <th class="numeric">Lotes/Mês</th>
+                <th class="numeric">Qtd./Lote</th>
+                <th class="numeric">Valor/Lote</th>
+                <th class="numeric">Valor Total/Mês</th>
+                <th>Incoterm</th>
+                <th>Lead Time</th>
+                <th>MOQ</th>
+                <th>Pagamento</th>
+                <th>Compliance</th>
+                <th>Cert.</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- ════════ MINERAÇÃO ════════ -->
+              <tr data-segment="mineracao">
+                <td>
+                  <div class="supplier-cell">
+                    <div class="supplier-avatar-lg" style="background: var(--seg-mining);">VA</div>
+                    <div>
+                      <div class="supplier-name-lg">Vale S.A.</div>
+                      <div class="supplier-code">SUP-BR-0001</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="seg-tag" style="background: var(--seg-mining-soft); color: var(--seg-mining);"><span class="dot"></span>Mineração</span></td>
+                <td><div class="products-list"><span class="product-chip">Minério de ferro</span><span class="product-chip">Níquel</span></div></td>
+                <td><div class="origin-cell"><span class="country-code">BR</span>Brasil</div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main">4,2M <span class="cur">ton</span></div><div class="metric-sub">150k ton/dia</div></div></td>
+                <td class="numeric"><span class="lot-badge">28 lotes</span></td>
+                <td class="numeric"><div class="metric-main">150k <span class="cur">ton</span></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>64,2M</div><div class="metric-sub">US$ 11,4M</div></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>1,80B</div><div class="metric-sub">US$ 320M</div></div></td>
+                <td><span class="incoterm-badge">FOB</span></td>
+                <td><span class="leadtime">18 dias</span></td>
+                <td><span class="lot-badge">50k ton</span></td>
+                <td><span class="badge badge-info">30/60d</span></td>
+                <td><span class="badge badge-success"><span class="badge-dot"></span>OK</span></td>
+                <td><div class="certs-cell"><span class="cert-icon valid" title="ISO 14001">ISO</span><span class="cert-icon valid" title="ISO 9001">9001</span></div></td>
+                <td><div class="actions-cell"><button class="row-action" aria-label="Ver"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td>
+              </tr>
+              <tr data-segment="mineracao">
+                <td>
+                  <div class="supplier-cell">
+                    <div class="supplier-avatar-lg" style="background: var(--seg-mining);">RT</div>
+                    <div>
+                      <div class="supplier-name-lg">Rio Tinto Group</div>
+                      <div class="supplier-code">SUP-AU-0002</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="seg-tag" style="background: var(--seg-mining-soft); color: var(--seg-mining);"><span class="dot"></span>Mineração</span></td>
+                <td><div class="products-list"><span class="product-chip">Minério de ferro</span><span class="product-chip">Alumínio</span></div></td>
+                <td><div class="origin-cell"><span class="country-code">AU</span>Austrália</div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main">3,8M <span class="cur">ton</span></div><div class="metric-sub">126k ton/dia</div></div></td>
+                <td class="numeric"><span class="lot-badge">24 lotes</span></td>
+                <td class="numeric"><div class="metric-main">158k <span class="cur">ton</span></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>71,3M</div><div class="metric-sub">US$ 12,7M</div></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>1,71B</div><div class="metric-sub">US$ 305M</div></div></td>
+                <td><span class="incoterm-badge">CFR</span></td>
+                <td><span class="leadtime">22 dias</span></td>
+                <td><span class="lot-badge">80k ton</span></td>
+                <td><span class="badge badge-info">30/60d</span></td>
+                <td><span class="badge badge-success"><span class="badge-dot"></span>OK</span></td>
+                <td><div class="certs-cell"><span class="cert-icon valid" title="ISO 14001">ISO</span><span class="cert-icon valid" title="ISO 45001">45001</span></div></td>
+                <td><div class="actions-cell"><button class="row-action" aria-label="Ver"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td>
+              </tr>
+              <tr data-segment="mineracao">
+                <td>
+                  <div class="supplier-cell">
+                    <div class="supplier-avatar-lg" style="background: var(--seg-mining);">BH</div>
+                    <div>
+                      <div class="supplier-name-lg">BHP Group</div>
+                      <div class="supplier-code">SUP-AU-0003</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="seg-tag" style="background: var(--seg-mining-soft); color: var(--seg-mining);"><span class="dot"></span>Mineração</span></td>
+                <td><div class="products-list"><span class="product-chip">Minério de ferro</span><span class="product-chip">Cobre</span></div></td>
+                <td><div class="origin-cell"><span class="country-code">AU</span>Austrália</div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main">4,5M <span class="cur">ton</span></div><div class="metric-sub">160k ton/dia</div></div></td>
+                <td class="numeric"><span class="lot-badge">30 lotes</span></td>
+                <td class="numeric"><div class="metric-main">150k <span class="cur">ton</span></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>66,7M</div><div class="metric-sub">US$ 11,9M</div></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>2,00B</div><div class="metric-sub">US$ 356M</div></div></td>
+                <td><span class="incoterm-badge">FOB</span></td>
+                <td><span class="leadtime">20 dias</span></td>
+                <td><span class="lot-badge">100k ton</span></td>
+                <td><span class="badge badge-info">30/60d</span></td>
+                <td><span class="badge badge-success"><span class="badge-dot"></span>OK</span></td>
+                <td><div class="certs-cell"><span class="cert-icon valid" title="ISO 14001">ISO</span><span class="cert-icon valid" title="ISO 45001">45001</span></div></td>
+                <td><div class="actions-cell"><button class="row-action" aria-label="Ver"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td>
+              </tr>
+              <tr data-segment="mineracao">
+                <td>
+                  <div class="supplier-cell">
+                    <div class="supplier-avatar-lg" style="background: var(--seg-mining);">AA</div>
+                    <div>
+                      <div class="supplier-name-lg">Anglo American</div>
+                      <div class="supplier-code">SUP-ZA-0004</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="seg-tag" style="background: var(--seg-mining-soft); color: var(--seg-mining);"><span class="dot"></span>Mineração</span></td>
+                <td><div class="products-list"><span class="product-chip">Platina</span><span class="product-chip">Diamante</span></div></td>
+                <td><div class="origin-cell"><span class="country-code">ZA</span>África do Sul</div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main">1,8M <span class="cur">ton</span></div><div class="metric-sub">64k ton/dia</div></div></td>
+                <td class="numeric"><span class="lot-badge">16 lotes</span></td>
+                <td class="numeric"><div class="metric-main">112k <span class="cur">ton</span></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>109M</div><div class="metric-sub">US$ 19,4M</div></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>1,74B</div><div class="metric-sub">US$ 310M</div></div></td>
+                <td><span class="incoterm-badge">CIF</span></td>
+                <td><span class="leadtime warn">32 dias</span></td>
+                <td><span class="lot-badge">25k ton</span></td>
+                <td><span class="badge badge-warning">45/60d</span></td>
+                <td><span class="badge badge-warning"><span class="badge-dot"></span>Revisão</span></td>
+                <td><div class="certs-cell"><span class="cert-icon valid" title="ISO 14001">ISO</span></div></td>
+                <td><div class="actions-cell"><button class="row-action" aria-label="Ver"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td>
+              </tr>
+              <tr data-segment="mineracao">
+                <td>
+                  <div class="supplier-cell">
+                    <div class="supplier-avatar-lg" style="background: var(--seg-mining);">CD</div>
+                    <div>
+                      <div class="supplier-name-lg">Codelco</div>
+                      <div class="supplier-code">SUP-CL-0005</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="seg-tag" style="background: var(--seg-mining-soft); color: var(--seg-mining);"><span class="dot"></span>Mineração</span></td>
+                <td><div class="products-list"><span class="product-chip">Cobre</span><span class="product-chip">Molibdênio</span></div></td>
+                <td><div class="origin-cell"><span class="country-code">CL</span>Chile</div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main">1,4M <span class="cur">ton</span></div><div class="metric-sub">50k ton/dia</div></div></td>
+                <td class="numeric"><span class="lot-badge">14 lotes</span></td>
+                <td class="numeric"><div class="metric-main">100k <span class="cur">ton</span></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>124M</div><div class="metric-sub">US$ 22,1M</div></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>1,74B</div><div class="metric-sub">US$ 310M</div></div></td>
+                <td><span class="incoterm-badge">FOB</span></td>
+                <td><span class="leadtime">26 dias</span></td>
+                <td><span class="lot-badge">30k ton</span></td>
+                <td><span class="badge badge-info">30/90d</span></td>
+                <td><span class="badge badge-success"><span class="badge-dot"></span>OK</span></td>
+                <td><div class="certs-cell"><span class="cert-icon valid" title="ISO 9001">9001</span></div></td>
+                <td><div class="actions-cell"><button class="row-action" aria-label="Ver"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td>
+              </tr>
+
+              <!-- ════════ AGRO ════════ -->
+              <tr data-segment="agro">
+                <td>
+                  <div class="supplier-cell">
+                    <div class="supplier-avatar-lg" style="background: var(--seg-agro);">CG</div>
+                    <div>
+                      <div class="supplier-name-lg">Cargill</div>
+                      <div class="supplier-code">SUP-US-0006</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="seg-tag" style="background: var(--seg-agro-soft); color: var(--seg-agro);"><span class="dot"></span>Agronegócio</span></td>
+                <td><div class="products-list"><span class="product-chip">Soja</span><span class="product-chip">Milho</span></div></td>
+                <td><div class="origin-cell"><span class="country-code">US</span>EUA</div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main">1,2M <span class="cur">ton</span></div><div class="metric-sub">43k ton/dia</div></div></td>
+                <td class="numeric"><span class="lot-badge">40 lotes</span></td>
+                <td class="numeric"><div class="metric-main">30k <span class="cur">ton</span></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>8,4M</div><div class="metric-sub">US$ 1,5M</div></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>336M</div><div class="metric-sub">US$ 60M</div></div></td>
+                <td><span class="incoterm-badge">CFR</span></td>
+                <td><span class="leadtime">28 dias</span></td>
+                <td><span class="lot-badge">5k ton</span></td>
+                <td><span class="badge badge-info">30/60d</span></td>
+                <td><span class="badge badge-success"><span class="badge-dot"></span>OK</span></td>
+                <td><div class="certs-cell"><span class="cert-icon valid" title="GlobalG.A.P.">GAP</span><span class="cert-icon valid" title="ISO 22000">22000</span></div></td>
+                <td><div class="actions-cell"><button class="row-action" aria-label="Ver"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td>
+              </tr>
+              <tr data-segment="agro">
+                <td>
+                  <div class="supplier-cell">
+                    <div class="supplier-avatar-lg" style="background: var(--seg-agro);">AD</div>
+                    <div>
+                      <div class="supplier-name-lg">Archer Daniels Midland</div>
+                      <div class="supplier-code">SUP-US-0007</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="seg-tag" style="background: var(--seg-agro-soft); color: var(--seg-agro);"><span class="dot"></span>Agronegócio</span></td>
+                <td><div class="products-list"><span class="product-chip">Soja</span><span class="product-chip">Cacau</span></div></td>
+                <td><div class="origin-cell"><span class="country-code">US</span>EUA</div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main">1,0M <span class="cur">ton</span></div><div class="metric-sub">36k ton/dia</div></div></td>
+                <td class="numeric"><span class="lot-badge">35 lotes</span></td>
+                <td class="numeric"><div class="metric-main">28k <span class="cur">ton</span></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>9,1M</div><div class="metric-sub">US$ 1,6M</div></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>318M</div><div class="metric-sub">US$ 56,8M</div></div></td>
+                <td><span class="incoterm-badge">FOB</span></td>
+                <td><span class="leadtime">30 dias</span></td>
+                <td><span class="lot-badge">5k ton</span></td>
+                <td><span class="badge badge-info">30/60d</span></td>
+                <td><span class="badge badge-success"><span class="badge-dot"></span>OK</span></td>
+                <td><div class="certs-cell"><span class="cert-icon valid" title="ISO 22000">22000</span></div></td>
+                <td><div class="actions-cell"><button class="row-action" aria-label="Ver"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td>
+              </tr>
+              <tr data-segment="agro">
+                <td>
+                  <div class="supplier-cell">
+                    <div class="supplier-avatar-lg" style="background: var(--seg-agro);">BG</div>
+                    <div>
+                      <div class="supplier-name-lg">Bunge Global</div>
+                      <div class="supplier-code">SUP-BM-0008</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="seg-tag" style="background: var(--seg-agro-soft); color: var(--seg-agro);"><span class="dot"></span>Agronegócio</span></td>
+                <td><div class="products-list"><span class="product-chip">Soja</span><span class="product-chip">Milho</span></div></td>
+                <td><div class="origin-cell"><span class="country-code">BM</span>Bermudas</div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main">900k <span class="cur">ton</span></div><div class="metric-sub">32k ton/dia</div></div></td>
+                <td class="numeric"><span class="lot-badge">30 lotes</span></td>
+                <td class="numeric"><div class="metric-main">30k <span class="cur">ton</span></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>8,7M</div><div class="metric-sub">US$ 1,5M</div></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>260M</div><div class="metric-sub">US$ 46,5M</div></div></td>
+                <td><span class="incoterm-badge">CIF</span></td>
+                <td><span class="leadtime">32 dias</span></td>
+                <td><span class="lot-badge">5k ton</span></td>
+                <td><span class="badge badge-info">30/60d</span></td>
+                <td><span class="badge badge-success"><span class="badge-dot"></span>OK</span></td>
+                <td><div class="certs-cell"><span class="cert-icon valid" title="ISO 22000">22000</span></div></td>
+                <td><div class="actions-cell"><button class="row-action" aria-label="Ver"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td>
+              </tr>
+              <tr data-segment="agro">
+                <td>
+                  <div class="supplier-cell">
+                    <div class="supplier-avatar-lg" style="background: var(--seg-agro);">AM</div>
+                    <div>
+                      <div class="supplier-name-lg">Amaggi</div>
+                      <div class="supplier-code">SUP-BR-0009</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="seg-tag" style="background: var(--seg-agro-soft); color: var(--seg-agro);"><span class="dot"></span>Agronegócio</span></td>
+                <td><div class="products-list"><span class="product-chip">Soja</span><span class="product-chip">Algodão</span></div></td>
+                <td><div class="origin-cell"><span class="country-code">BR</span>Brasil</div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main">600k <span class="cur">ton</span></div><div class="metric-sub">22k ton/dia</div></div></td>
+                <td class="numeric"><span class="lot-badge">20 lotes</span></td>
+                <td class="numeric"><div class="metric-main">30k <span class="cur">ton</span></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>7,8M</div><div class="metric-sub">US$ 1,4M</div></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>156M</div><div class="metric-sub">US$ 27,9M</div></div></td>
+                <td><span class="incoterm-badge">FOB</span></td>
+                <td><span class="leadtime">21 dias</span></td>
+                <td><span class="lot-badge">3k ton</span></td>
+                <td><span class="badge badge-info">30/60d</span></td>
+                <td><span class="badge badge-success"><span class="badge-dot"></span>OK</span></td>
+                <td><div class="certs-cell"><span class="cert-icon valid" title="ProTerra">PT</span><span class="cert-icon valid" title="RTRS">RTRS</span></div></td>
+                <td><div class="actions-cell"><button class="row-action" aria-label="Ver"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td>
+              </tr>
+
+              <!-- ════════ METAIS ════════ -->
+              <tr data-segment="metais">
+                <td>
+                  <div class="supplier-cell">
+                    <div class="supplier-avatar-lg" style="background: var(--seg-metals);">AM</div>
+                    <div>
+                      <div class="supplier-name-lg">ArcelorMittal</div>
+                      <div class="supplier-code">SUP-LU-0010</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="seg-tag" style="background: var(--seg-metals-soft); color: var(--seg-metals);"><span class="dot"></span>Metais</span></td>
+                <td><div class="products-list"><span class="product-chip">Aço bruto</span><span class="product-chip">Laminados</span></div></td>
+                <td><div class="origin-cell"><span class="country-code">LU</span>Luxemburgo</div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main">800k <span class="cur">ton</span></div><div class="metric-sub">29k ton/dia</div></div></td>
+                <td class="numeric"><span class="lot-badge">40 lotes</span></td>
+                <td class="numeric"><div class="metric-main">20k <span class="cur">ton</span></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>18,2M</div><div class="metric-sub">US$ 3,2M</div></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>728M</div><div class="metric-sub">US$ 130M</div></div></td>
+                <td><span class="incoterm-badge">CIF</span></td>
+                <td><span class="leadtime">35 dias</span></td>
+                <td><span class="lot-badge">5k ton</span></td>
+                <td><span class="badge badge-info">45/60d</span></td>
+                <td><span class="badge badge-success"><span class="badge-dot"></span>OK</span></td>
+                <td><div class="certs-cell"><span class="cert-icon valid" title="ISO 9001">9001</span><span class="cert-icon valid" title="ISO 14001">14001</span></div></td>
+                <td><div class="actions-cell"><button class="row-action" aria-label="Ver"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td>
+              </tr>
+              <tr data-segment="metais">
+                <td>
+                  <div class="supplier-cell">
+                    <div class="supplier-avatar-lg" style="background: var(--seg-metals);">PS</div>
+                    <div>
+                      <div class="supplier-name-lg">POSCO Holdings</div>
+                      <div class="supplier-code">SUP-KR-0011</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="seg-tag" style="background: var(--seg-metals-soft); color: var(--seg-metals);"><span class="dot"></span>Metais</span></td>
+                <td><div class="products-list"><span class="product-chip">Aço laminado</span><span class="product-chip">Aço inox</span></div></td>
+                <td><div class="origin-cell"><span class="country-code">KR</span>Coreia do Sul</div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main">650k <span class="cur">ton</span></div><div class="metric-sub">24k ton/dia</div></div></td>
+                <td class="numeric"><span class="lot-badge">32 lotes</span></td>
+                <td class="numeric"><div class="metric-main">20k <span class="cur">ton</span></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>17,2M</div><div class="metric-sub">US$ 3,1M</div></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>550M</div><div class="metric-sub">US$ 98M</div></div></td>
+                <td><span class="incoterm-badge">FOB</span></td>
+                <td><span class="leadtime">38 dias</span></td>
+                <td><span class="lot-badge">5k ton</span></td>
+                <td><span class="badge badge-info">30/90d</span></td>
+                <td><span class="badge badge-success"><span class="badge-dot"></span>OK</span></td>
+                <td><div class="certs-cell"><span class="cert-icon valid" title="ISO 9001">9001</span></div></td>
+                <td><div class="actions-cell"><button class="row-action" aria-label="Ver"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td>
+              </tr>
+              <tr data-segment="metais">
+                <td>
+                  <div class="supplier-cell">
+                    <div class="supplier-avatar-lg" style="background: var(--seg-metals);">AL</div>
+                    <div>
+                      <div class="supplier-name-lg">Alcoa Corporation</div>
+                      <div class="supplier-code">SUP-US-0012</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="seg-tag" style="background: var(--seg-metals-soft); color: var(--seg-metals);"><span class="dot"></span>Metais</span></td>
+                <td><div class="products-list"><span class="product-chip">Alumínio</span><span class="product-chip">Alumina</span></div></td>
+                <td><div class="origin-cell"><span class="country-code">US</span>EUA</div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main">280k <span class="cur">ton</span></div><div class="metric-sub">10k ton/dia</div></div></td>
+                <td class="numeric"><span class="lot-badge">28 lotes</span></td>
+                <td class="numeric"><div class="metric-main">10k <span class="cur">ton</span></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>14,5M</div><div class="metric-sub">US$ 2,6M</div></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>406M</div><div class="metric-sub">US$ 72,5M</div></div></td>
+                <td><span class="incoterm-badge">CFR</span></td>
+                <td><span class="leadtime">33 dias</span></td>
+                <td><span class="lot-badge">2k ton</span></td>
+                <td><span class="badge badge-info">30/60d</span></td>
+                <td><span class="badge badge-success"><span class="badge-dot"></span>OK</span></td>
+                <td><div class="certs-cell"><span class="cert-icon valid" title="ASI">ASI</span><span class="cert-icon valid" title="ISO 14001">14001</span></div></td>
+                <td><div class="actions-cell"><button class="row-action" aria-label="Ver"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td>
+              </tr>
+
+              <!-- ════════ ENERGIA ════════ -->
+              <tr data-segment="energia">
+                <td>
+                  <div class="supplier-cell">
+                    <div class="supplier-avatar-lg" style="background: var(--seg-energy);">PB</div>
+                    <div>
+                      <div class="supplier-name-lg">Petrobras</div>
+                      <div class="supplier-code">SUP-BR-0013</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="seg-tag" style="background: var(--seg-energy-soft); color: var(--seg-energy);"><span class="dot"></span>Energia</span></td>
+                <td><div class="products-list"><span class="product-chip">Petróleo bruto</span><span class="product-chip">Gás natural</span></div></td>
+                <td><div class="origin-cell"><span class="country-code">BR</span>Brasil</div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main">2,8M <span class="cur">bbl/d</span></div><div class="metric-sub">84M bbl/mês</div></div></td>
+                <td class="numeric"><span class="lot-badge">12 lotes</span></td>
+                <td class="numeric"><div class="metric-main">7M <span class="cur">bbl</span></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>28,4M</div><div class="metric-sub">US$ 5,0M</div></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>341M</div><div class="metric-sub">US$ 61M</div></div></td>
+                <td><span class="incoterm-badge">FOB</span></td>
+                <td><span class="leadtime">14 dias</span></td>
+                <td><span class="lot-badge">500k bbl</span></td>
+                <td><span class="badge badge-info">30/30d</span></td>
+                <td><span class="badge badge-success"><span class="badge-dot"></span>OK</span></td>
+                <td><div class="certs-cell"><span class="cert-icon valid" title="ISO 14001">14001</span><span class="cert-icon valid" title="ISO 45001">45001</span></div></td>
+                <td><div class="actions-cell"><button class="row-action" aria-label="Ver"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td>
+              </tr>
+              <tr data-segment="energia">
+                <td>
+                  <div class="supplier-cell">
+                    <div class="supplier-avatar-lg" style="background: var(--seg-energy);">SH</div>
+                    <div>
+                      <div class="supplier-name-lg">Shell plc</div>
+                      <div class="supplier-code">SUP-UK-0014</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="seg-tag" style="background: var(--seg-energy-soft); color: var(--seg-energy);"><span class="dot"></span>Energia</span></td>
+                <td><div class="products-list"><span class="product-chip">Petróleo</span><span class="product-chip">GNL</span></div></td>
+                <td><div class="origin-cell"><span class="country-code">UK</span>Reino Unido</div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main">3,5M <span class="cur">bbl/d</span></div><div class="metric-sub">105M bbl/mês</div></div></td>
+                <td class="numeric"><span class="lot-badge">15 lotes</span></td>
+                <td class="numeric"><div class="metric-main">7M <span class="cur">bbl</span></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>30,1M</div><div class="metric-sub">US$ 5,4M</div></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>452M</div><div class="metric-sub">US$ 80,7M</div></div></td>
+                <td><span class="incoterm-badge">CIF</span></td>
+                <td><span class="leadtime">18 dias</span></td>
+                <td><span class="lot-badge">500k bbl</span></td>
+                <td><span class="badge badge-info">30/60d</span></td>
+                <td><span class="badge badge-success"><span class="badge-dot"></span>OK</span></td>
+                <td><div class="certs-cell"><span class="cert-icon valid" title="ISO 14001">14001</span></div></td>
+                <td><div class="actions-cell"><button class="row-action" aria-label="Ver"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td>
+              </tr>
+
+              <!-- ════════ QUÍMICOS ════════ -->
+              <tr data-segment="quimicos">
+                <td>
+                  <div class="supplier-cell">
+                    <div class="supplier-avatar-lg" style="background: var(--seg-chem);">BF</div>
+                    <div>
+                      <div class="supplier-name-lg">BASF SE</div>
+                      <div class="supplier-code">SUP-DE-0015</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="seg-tag" style="background: var(--seg-chem-soft); color: var(--seg-chem);"><span class="dot"></span>Químicos</span></td>
+                <td><div class="products-list"><span class="product-chip">Resinas</span><span class="product-chip">Agroquímicos</span></div></td>
+                <td><div class="origin-cell"><span class="country-code">DE</span>Alemanha</div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main">850k <span class="cur">kg</span></div><div class="metric-sub">31k kg/dia</div></div></td>
+                <td class="numeric"><span class="lot-badge">18 lotes</span></td>
+                <td class="numeric"><div class="metric-main">47k <span class="cur">kg</span></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>420k</div><div class="metric-sub">US$ 75k</div></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>7,6M</div><div class="metric-sub">US$ 1,36M</div></div></td>
+                <td><span class="incoterm-badge">CIF</span></td>
+                <td><span class="leadtime">26 dias</span></td>
+                <td><span class="lot-badge">5k kg</span></td>
+                <td><span class="badge badge-info">30/60d</span></td>
+                <td><span class="badge badge-success"><span class="badge-dot"></span>OK</span></td>
+                <td><div class="certs-cell"><span class="cert-icon valid" title="ISO 9001">9001</span><span class="cert-icon valid" title="REACH">REACH</span></div></td>
+                <td><div class="actions-cell"><button class="row-action" aria-label="Ver"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td>
+              </tr>
+              <tr data-segment="quimicos">
+                <td>
+                  <div class="supplier-cell">
+                    <div class="supplier-avatar-lg" style="background: var(--seg-chem);">DW</div>
+                    <div>
+                      <div class="supplier-name-lg">Dow Inc.</div>
+                      <div class="supplier-code">SUP-US-0016</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="seg-tag" style="background: var(--seg-chem-soft); color: var(--seg-chem);"><span class="dot"></span>Químicos</span></td>
+                <td><div class="products-list"><span class="product-chip">Polímeros</span><span class="product-chip">Especialidades</span></div></td>
+                <td><div class="origin-cell"><span class="country-code">US</span>EUA</div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main">720k <span class="cur">kg</span></div><div class="metric-sub">26k kg/dia</div></div></td>
+                <td class="numeric"><span class="lot-badge">16 lotes</span></td>
+                <td class="numeric"><div class="metric-main">45k <span class="cur">kg</span></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>395k</div><div class="metric-sub">US$ 70k</div></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>6,3M</div><div class="metric-sub">US$ 1,13M</div></div></td>
+                <td><span class="incoterm-badge">FOB</span></td>
+                <td><span class="leadtime">30 dias</span></td>
+                <td><span class="lot-badge">5k kg</span></td>
+                <td><span class="badge badge-info">30/60d</span></td>
+                <td><span class="badge badge-success"><span class="badge-dot"></span>OK</span></td>
+                <td><div class="certs-cell"><span class="cert-icon valid" title="ISO 9001">9001</span></div></td>
+                <td><div class="actions-cell"><button class="row-action" aria-label="Ver"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td>
+              </tr>
+
+              <!-- ════════ ELETRÔNICOS ════════ -->
+              <tr data-segment="eletronicos">
+                <td>
+                  <div class="supplier-cell">
+                    <div class="supplier-avatar-lg" style="background: var(--seg-tech);">SS</div>
+                    <div>
+                      <div class="supplier-name-lg">Samsung Electronics</div>
+                      <div class="supplier-code">SUP-KR-0017</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="seg-tag" style="background: var(--seg-tech-soft); color: var(--seg-tech);"><span class="dot"></span>Eletrônicos</span></td>
+                <td><div class="products-list"><span class="product-chip">Semicondutores</span><span class="product-chip">Displays</span></div></td>
+                <td><div class="origin-cell"><span class="country-code">KR</span>Coreia do Sul</div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main">1,2M <span class="cur">un</span></div><div class="metric-sub">40k un/dia</div></div></td>
+                <td class="numeric"><span class="lot-badge">24 lotes</span></td>
+                <td class="numeric"><div class="metric-main">50k <span class="cur">un</span></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>2,8M</div><div class="metric-sub">US$ 500k</div></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>67,2M</div><div class="metric-sub">US$ 12M</div></div></td>
+                <td><span class="incoterm-badge">FOB</span></td>
+                <td><span class="leadtime">21 dias</span></td>
+                <td><span class="lot-badge">10k un</span></td>
+                <td><span class="badge badge-info">30/45d</span></td>
+                <td><span class="badge badge-success"><span class="badge-dot"></span>OK</span></td>
+                <td><div class="certs-cell"><span class="cert-icon valid" title="ISO 9001">9001</span><span class="cert-icon valid" title="ISO 14001">14001</span></div></td>
+                <td><div class="actions-cell"><button class="row-action" aria-label="Ver"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td>
+              </tr>
+              <tr data-segment="eletronicos">
+                <td>
+                  <div class="supplier-cell">
+                    <div class="supplier-avatar-lg" style="background: var(--seg-tech);">TS</div>
+                    <div>
+                      <div class="supplier-name-lg">TSMC</div>
+                      <div class="supplier-code">SUP-TW-0018</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="seg-tag" style="background: var(--seg-tech-soft); color: var(--seg-tech);"><span class="dot"></span>Eletrônicos</span></td>
+                <td><div class="products-list"><span class="product-chip">Semicondutores</span><span class="product-chip">Wafers</span></div></td>
+                <td><div class="origin-cell"><span class="country-code">TW</span>Taiwan</div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main">1,4M <span class="cur">wafers</span></div><div class="metric-sub">47k wafers/dia</div></div></td>
+                <td class="numeric"><span class="lot-badge">28 lotes</span></td>
+                <td class="numeric"><div class="metric-main">50k <span class="cur">wafers</span></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>4,5M</div><div class="metric-sub">US$ 800k</div></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>126M</div><div class="metric-sub">US$ 22,5M</div></div></td>
+                <td><span class="incoterm-badge">EXW</span></td>
+                <td><span class="leadtime">28 dias</span></td>
+                <td><span class="lot-badge">5k wafers</span></td>
+                <td><span class="badge badge-info">30/60d</span></td>
+                <td><span class="badge badge-success"><span class="badge-dot"></span>OK</span></td>
+                <td><div class="certs-cell"><span class="cert-icon valid" title="ISO 9001">9001</span></div></td>
+                <td><div class="actions-cell"><button class="row-action" aria-label="Ver"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td>
+              </tr>
+
+              <!-- ════════ ALIMENTOS ════════ -->
+              <tr data-segment="alimentos">
+                <td>
+                  <div class="supplier-cell">
+                    <div class="supplier-avatar-lg" style="background: var(--seg-food);">JB</div>
+                    <div>
+                      <div class="supplier-name-lg">JBS S.A.</div>
+                      <div class="supplier-code">SUP-BR-0019</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="seg-tag" style="background: var(--seg-food-soft); color: var(--seg-food);"><span class="dot"></span>Alimentos</span></td>
+                <td><div class="products-list"><span class="product-chip">Carne bovina</span><span class="product-chip">Aves</span></div></td>
+                <td><div class="origin-cell"><span class="country-code">BR</span>Brasil</div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main">150k <span class="cur">ton</span></div><div class="metric-sub">5k ton/dia</div></div></td>
+                <td class="numeric"><span class="lot-badge">25 lotes</span></td>
+                <td class="numeric"><div class="metric-main">6k <span class="cur">ton</span></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>1,2M</div><div class="metric-sub">US$ 215k</div></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>30M</div><div class="metric-sub">US$ 5,4M</div></div></td>
+                <td><span class="incoterm-badge">FOB</span></td>
+                <td><span class="leadtime">20 dias</span></td>
+                <td><span class="lot-badge">2k ton</span></td>
+                <td><span class="badge badge-info">30/45d</span></td>
+                <td><span class="badge badge-success"><span class="badge-dot"></span>OK</span></td>
+                <td><div class="certs-cell"><span class="cert-icon valid" title="HACCP">HACCP</span><span class="cert-icon valid" title="ISO 22000">22000</span></div></td>
+                <td><div class="actions-cell"><button class="row-action" aria-label="Ver"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td>
+              </tr>
+              <tr data-segment="alimentos">
+                <td>
+                  <div class="supplier-cell">
+                    <div class="supplier-avatar-lg" style="background: var(--seg-food);">NS</div>
+                    <div>
+                      <div class="supplier-name-lg">Nestlé S.A.</div>
+                      <div class="supplier-code">SUP-CH-0020</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="seg-tag" style="background: var(--seg-food-soft); color: var(--seg-food);"><span class="dot"></span>Alimentos</span></td>
+                <td><div class="products-list"><span class="product-chip">Laticínios</span><span class="product-chip">Café</span></div></td>
+                <td><div class="origin-cell"><span class="country-code">CH</span>Suíça</div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main">98k <span class="cur">ton</span></div><div class="metric-sub">3,3k ton/dia</div></div></td>
+                <td class="numeric"><span class="lot-badge">22 lotes</span></td>
+                <td class="numeric"><div class="metric-main">4,5k <span class="cur">ton</span></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>840k</div><div class="metric-sub">US$ 150k</div></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>18,5M</div><div class="metric-sub">US$ 3,3M</div></div></td>
+                <td><span class="incoterm-badge">CIF</span></td>
+                <td><span class="leadtime">32 dias</span></td>
+                <td><span class="lot-badge">1,5k ton</span></td>
+                <td><span class="badge badge-info">30/60d</span></td>
+                <td><span class="badge badge-success"><span class="badge-dot"></span>OK</span></td>
+                <td><div class="certs-cell"><span class="cert-icon valid" title="ISO 22000">22000</span></div></td>
+                <td><div class="actions-cell"><button class="row-action" aria-label="Ver"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td>
+              </tr>
+
+              <!-- ════════ TÊXTIL ════════ -->
+              <tr data-segment="textil">
+                <td>
+                  <div class="supplier-cell">
+                    <div class="supplier-avatar-lg" style="background: var(--seg-textile);">NK</div>
+                    <div>
+                      <div class="supplier-name-lg">Nike Inc.</div>
+                      <div class="supplier-code">SUP-US-0021</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="seg-tag" style="background: var(--seg-textile-soft); color: var(--seg-textile);"><span class="dot"></span>Têxtil</span></td>
+                <td><div class="products-list"><span class="product-chip">Calçados</span><span class="product-chip">Vestuário</span></div></td>
+                <td><div class="origin-cell"><span class="country-code">US</span>EUA</div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main">230k <span class="cur">pares</span></div><div class="metric-sub">7,6k pares/dia</div></div></td>
+                <td class="numeric"><span class="lot-badge">18 lotes</span></td>
+                <td class="numeric"><div class="metric-main">12,8k <span class="cur">pares</span></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>1,24M</div><div class="metric-sub">US$ 220k</div></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>22,3M</div><div class="metric-sub">US$ 3,98M</div></div></td>
+                <td><span class="incoterm-badge">FOB</span></td>
+                <td><span class="leadtime">35 dias</span></td>
+                <td><span class="lot-badge">5k pares</span></td>
+                <td><span class="badge badge-info">30/45d</span></td>
+                <td><span class="badge badge-success"><span class="badge-dot"></span>OK</span></td>
+                <td><div class="certs-cell"><span class="cert-icon valid" title="SA8000">SA8000</span></div></td>
+                <td><div class="actions-cell"><button class="row-action" aria-label="Ver"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td>
+              </tr>
+              <tr data-segment="textil">
+                <td>
+                  <div class="supplier-cell">
+                    <div class="supplier-avatar-lg" style="background: var(--seg-textile);">AD</div>
+                    <div>
+                      <div class="supplier-name-lg">Adidas AG</div>
+                      <div class="supplier-code">SUP-DE-0022</div>
+                    </div>
+                  </div>
+                </td>
+                <td><span class="seg-tag" style="background: var(--seg-textile-soft); color: var(--seg-textile);"><span class="dot"></span>Têxtil</span></td>
+                <td><div class="products-list"><span class="product-chip">Calçados</span><span class="product-chip">Vestuário</span></div></td>
+                <td><div class="origin-cell"><span class="country-code">DE</span>Alemanha</div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main">180k <span class="cur">pares</span></div><div class="metric-sub">6k pares/dia</div></div></td>
+                <td class="numeric"><span class="lot-badge">15 lotes</span></td>
+                <td class="numeric"><div class="metric-main">12k <span class="cur">pares</span></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>1,20M</div><div class="metric-sub">US$ 215k</div></div></td>
+                <td class="numeric"><div class="metric-cell"><div class="metric-main"><span class="cur">R$</span>18M</div><div class="metric-sub">US$ 3,21M</div></div></td>
+                <td><span class="incoterm-badge">FOB</span></td>
+                <td><span class="leadtime warn">42 dias</span></td>
+                <td><span class="lot-badge">5k pares</span></td>
+                <td><span class="badge badge-info">30/60d</span></td>
+                <td><span class="badge badge-warning"><span class="badge-dot"></span>Auditoria</span></td>
+                <td><div class="certs-cell"><span class="cert-icon valid" title="SA8000">SA8000</span></div></td>
+                <td><div class="actions-cell"><button class="row-action" aria-label="Ver"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Featured suppliers -->
+      <div class="section-title-wrap reveal">
+        <div>
+          <div class="section-title">Destaques estratégicos</div>
+          <div class="section-subtitle">Top fornecedores por valor de operação · mês atual</div>
+        </div>
+      </div>
+
+      <div class="featured-grid reveal">
+        <div class="featured-card">
+          <div class="featured-head">
+            <div class="featured-avatar" style="background: var(--seg-mining);">BH</div>
+            <div>
+              <div class="featured-name">BHP Group</div>
+              <div class="featured-country">🇦🇺 Austrália · Mineração</div>
+            </div>
+          </div>
+          <div class="featured-highlight">
+            <div class="featured-highlight-label">Valor total / mês</div>
+            <div class="featured-highlight-value"><span class="cur">R$</span>2,00B</div>
+          </div>
+          <div class="featured-row"><span class="label">Qtd. total/mês</span><span class="value">4,5M ton</span></div>
+          <div class="featured-row"><span class="label">Lotes</span><span class="value">30 · 150k ton</span></div>
+          <div class="featured-row"><span class="label">Valor/lote</span><span class="value">R$ 66,7M</span></div>
+          <div class="featured-row"><span class="label">Incoterm</span><span class="value">FOB</span></div>
+        </div>
+
+        <div class="featured-card">
+          <div class="featured-head">
+            <div class="featured-avatar" style="background: var(--seg-mining);">VA</div>
+            <div>
+              <div class="featured-name">Vale S.A.</div>
+              <div class="featured-country">🇧🇷 Brasil · Mineração</div>
+            </div>
+          </div>
+          <div class="featured-highlight">
+            <div class="featured-highlight-label">Valor total / mês</div>
+            <div class="featured-highlight-value"><span class="cur">R$</span>1,80B</div>
+          </div>
+          <div class="featured-row"><span class="label">Qtd. total/mês</span><span class="value">4,2M ton</span></div>
+          <div class="featured-row"><span class="label">Lotes</span><span class="value">28 · 150k ton</span></div>
+          <div class="featured-row"><span class="label">Valor/lote</span><span class="value">R$ 64,2M</span></div>
+          <div class="featured-row"><span class="label">Incoterm</span><span class="value">FOB</span></div>
+        </div>
+
+        <div class="featured-card">
+          <div class="featured-head">
+            <div class="featured-avatar" style="background: var(--seg-mining);">AA</div>
+            <div>
+              <div class="featured-name">Anglo American</div>
+              <div class="featured-country">🇿🇦 África do Sul · Mineração</div>
+            </div>
+          </div>
+          <div class="featured-highlight">
+            <div class="featured-highlight-label">Valor total / mês</div>
+            <div class="featured-highlight-value"><span class="cur">R$</span>1,74B</div>
+          </div>
+          <div class="featured-row"><span class="label">Qtd. total/mês</span><span class="value">1,8M ton</span></div>
+          <div class="featured-row"><span class="label">Lotes</span><span class="value">16 · 112k ton</span></div>
+          <div class="featured-row"><span class="label">Valor/lote</span><span class="value">R$ 109M</span></div>
+          <div class="featured-row"><span class="label">Incoterm</span><span class="value">CIF</span></div>
+        </div>
+
+        <div class="featured-card">
+          <div class="featured-head">
+            <div class="featured-avatar" style="background: var(--seg-metals);">AM</div>
+            <div>
+              <div class="featured-name">ArcelorMittal</div>
+              <div class="featured-country">🇱🇺 Luxemburgo · Metais</div>
+            </div>
+          </div>
+          <div class="featured-highlight">
+            <div class="featured-highlight-label">Valor total / mês</div>
+            <div class="featured-highlight-value"><span class="cur">R$</span>728M</div>
+          </div>
+          <div class="featured-row"><span class="label">Qtd. total/mês</span><span class="value">800k ton</span></div>
+          <div class="featured-row"><span class="label">Lotes</span><span class="value">40 · 20k ton</span></div>
+          <div class="featured-row"><span class="label">Valor/lote</span><span class="value">R$ 18,2M</span></div>
+          <div class="featured-row"><span class="label">Incoterm</span><span class="value">CIF</span></div>
+        </div>
+      </div>
+
+      <!-- Compliance matrix -->
+      <div class="section-title-wrap reveal">
+        <div>
+          <div class="section-title">Matriz de compliance por segmento</div>
+          <div class="section-subtitle">% de fornecedores com certificação válida</div>
+        </div>
+      </div>
+
+      <div class="card matrix-card reveal">
+        <div class="matrix-grid">
+          <div class="matrix-header">Segmento</div>
+          <div class="matrix-header">ISO 9001</div>
+          <div class="matrix-header">ISO 14001</div>
+          <div class="matrix-header">ISO 22000</div>
+          <div class="matrix-header">ISO 45001</div>
+          <div class="matrix-header">REACH</div>
+          <div class="matrix-header">SA8000</div>
+
+          <div class="matrix-label">Mineração</div>
+          <div class="matrix-cell"><span class="pct-bar"><span class="pct-fill" style="width: 88%; background: var(--seg-mining);"></span></span><strong>88%</strong></div>
+          <div class="matrix-cell"><span class="pct-bar"><span class="pct-fill" style="width: 92%; background: var(--seg-mining);"></span></span><strong>92%</strong></div>
+          <div class="matrix-cell">—</div>
+          <div class="matrix-cell"><span class="pct-bar"><span class="pct-fill" style="width: 76%; background: var(--seg-mining);"></span></span><strong>76%</strong></div>
+          <div class="matrix-cell">—</div>
+          <div class="matrix-cell"><span class="pct-bar"><span class="pct-fill" style="width: 24%; background: var(--seg-mining);"></span></span><strong>24%</strong></div>
+
+          <div class="matrix-label">Agronegócio</div>
+          <div class="matrix-cell"><span class="pct-bar"><span class="pct-fill" style="width: 82%; background: var(--seg-agro);"></span></span><strong>82%</strong></div>
+          <div class="matrix-cell"><span class="pct-bar"><span class="pct-fill" style="width: 68%; background: var(--seg-agro);"></span></span><strong>68%</strong></div>
+          <div class="matrix-cell"><span class="pct-bar"><span class="pct-fill" style="width: 94%; background: var(--seg-agro);"></span></span><strong>94%</strong></div>
+          <div class="matrix-cell">—</div>
+          <div class="matrix-cell"><span class="pct-bar"><span class="pct-fill" style="width: 40%; background: var(--seg-agro);"></span></span><strong>40%</strong></div>
+          <div class="matrix-cell">—</div>
+
+          <div class="matrix-label">Metais</div>
+          <div class="matrix-cell"><span class="pct-bar"><span class="pct-fill" style="width: 96%; background: var(--seg-metals);"></span></span><strong>96%</strong></div>
+          <div class="matrix-cell"><span class="pct-bar"><span class="pct-fill" style="width: 84%; background: var(--seg-metals);"></span></span><strong>84%</strong></div>
+          <div class="matrix-cell">—</div>
+          <div class="matrix-cell"><span class="pct-bar"><span class="pct-fill" style="width: 72%; background: var(--seg-metals);"></span></span><strong>72%</strong></div>
+          <div class="matrix-cell"><span class="pct-bar"><span class="pct-fill" style="width: 56%; background: var(--seg-metals);"></span></span><strong>56%</strong></div>
+          <div class="matrix-cell">—</div>
+
+          <div class="matrix-label">Energia</div>
+          <div class="matrix-cell"><span class="pct-bar"><span class="pct-fill" style="width: 78%; background: var(--seg-energy);"></span></span><strong>78%</strong></div>
+          <div class="matrix-cell"><span class="pct-bar"><span class="pct-fill" style="width: 88%; background: var(--seg-energy);"></span></span><strong>88%</strong></div>
+          <div class="matrix-cell">—</div>
+          <div class="matrix-cell"><span class="pct-bar"><span class="pct-fill" style="width: 82%; background: var(--seg-energy);"></span></span><strong>82%</strong></div>
+          <div class="matrix-cell">—</div>
+          <div class="matrix-cell">—</div>
+
+          <div class="matrix-label">Eletrônicos</div>
+          <div class="matrix-cell"><span class="pct-bar"><span class="pct-fill" style="width: 94%; background: var(--seg-tech);"></span></span><strong>94%</strong></div>
+          <div class="matrix-cell"><span class="pct-bar"><span class="pct-fill" style="width: 74%; background: var(--seg-tech);"></span></span><strong>74%</strong></div>
+          <div class="matrix-cell">—</div>
+          <div class="matrix-cell"><span class="pct-bar"><span class="pct-fill" style="width: 58%; background: var(--seg-tech);"></span></span><strong>58%</strong></div>
+          <div class="matrix-cell"><span class="pct-bar"><span class="pct-fill" style="width: 66%; background: var(--seg-tech);"></span></span><strong>66%</strong></div>
+          <div class="matrix-cell">—</div>
+
+          <div class="matrix-label">Químicos</div>
+          <div class="matrix-cell"><span class="pct-bar"><span class="pct-fill" style="width: 92%; background: var(--seg-chem);"></span></span><strong>92%</strong></div>
+          <div class="matrix-cell"><span class="pct-bar"><span class="pct-fill" style="width: 86%; background: var(--seg-chem);"></span></span><strong>86%</strong></div>
+          <div class="matrix-cell">—</div>
+          <div class="matrix-cell">—</div>
+          <div class="matrix-cell"><span class="pct-bar"><span class="pct-fill" style="width: 98%; background: var(--seg-chem);"></span></span><strong>98%</strong></div>
+          <div class="matrix-cell">—</div>
+
+          <div class="matrix-label">Alimentos</div>
+          <div class="matrix-cell"><span class="pct-bar"><span class="pct-fill" style="width: 90%; background: var(--seg-food);"></span></span><strong>90%</strong></div>
+          <div class="matrix-cell"><span class="pct-bar"><span class="pct-fill" style="width: 70%; background: var(--seg-food);"></span></span><strong>70%</strong></div>
+          <div class="matrix-cell"><span class="pct-bar"><span class="pct-fill" style="width: 96%; background: var(--seg-food);"></span></span><strong>96%</strong></div>
+          <div class="matrix-cell">—</div>
+          <div class="matrix-cell">—</div>
+          <div class="matrix-cell">—</div>
+
+          <div class="matrix-label">Têxtil & Calçados</div>
+          <div class="matrix-cell"><span class="pct-bar"><span class="pct-fill" style="width: 84%; background: var(--seg-textile);"></span></span><strong>84%</strong></div>
+          <div class="matrix-cell"><span class="pct-bar"><span class="pct-fill" style="width: 62%; background: var(--seg-textile);"></span></span><strong>62%</strong></div>
+          <div class="matrix-cell">—</div>
+          <div class="matrix-cell">—</div>
+          <div class="matrix-cell">—</div>
+          <div class="matrix-cell"><span class="pct-bar"><span class="pct-fill" style="width: 88%; background: var(--seg-textile);"></span></span><strong>88%</strong></div>
+        </div>
+      </div>
+
+      <!-- Footer info -->
+      <div class="footer-info reveal">
+        <div>
+          © 2025 SICX · Um produto
+          <a href="https://laboratoryofk.com" target="_blank" rel="noopener noreferrer">Laboratory of K</a>
+        </div>
+        <div style="display:flex; gap:12px;">
+          <a href="#status">
+            <span class="status-dot online" style="margin-right:4px;"></span>
+            Todos os sistemas operacionais
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  const sidebar = document.getElementById('sidebar');
+  const sidebarOverlay = document.getElementById('sidebarOverlay');
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+
+  function openSidebar() { sidebar.classList.add('open'); sidebarOverlay.classList.add('open'); }
+  function closeSidebar() { sidebar.classList.remove('open'); sidebarOverlay.classList.remove('open'); }
+  mobileMenuBtn.addEventListener('click', () => {
+    sidebar.classList.contains('open') ? closeSidebar() : openSidebar();
+  });
+  sidebarOverlay.addEventListener('click', closeSidebar);
+
+  let activeSegment = 'todos';
+  const segmentCards = document.querySelectorAll('.segment-card');
+  const filterTabs = document.querySelectorAll('.filter-tab');
+  const tableRows = document.querySelectorAll('#supplierTable tbody tr');
+  const visibleCountEl = document.getElementById('visibleCount');
+  const searchInput = document.getElementById('supplierSearch');
+
+  function applyFilters() {
+    const query = (searchInput.value || '').toLowerCase().trim();
+    let visible = 0;
+    tableRows.forEach((row) => {
+      const seg = row.getAttribute('data-segment');
+      const text = row.textContent.toLowerCase();
+      const matchSeg = activeSegment === 'todos' || seg === activeSegment;
+      const matchQuery = !query || text.includes(query);
+      if (matchSeg && matchQuery) {
+        row.style.display = '';
+        visible++;
+      } else {
+        row.style.display = 'none';
+      }
+    });
+    visibleCountEl.textContent = visible;
+  }
+
+  segmentCards.forEach((card) => {
+    card.addEventListener('click', () => {
+      const seg = card.getAttribute('data-segment');
+      if (activeSegment === seg) {
+        activeSegment = 'todos';
+        segmentCards.forEach((c) => c.classList.remove('active'));
+      } else {
+        activeSegment = seg;
+        segmentCards.forEach((c) => c.classList.remove('active'));
+        card.classList.add('active');
+      }
+      filterTabs.forEach((t) => {
+        t.classList.toggle('active', t.getAttribute('data-filter') === activeSegment);
+      });
+      applyFilters();
+      document.querySelector('#supplierTable').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  filterTabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      activeSegment = tab.getAttribute('data-filter');
+      filterTabs.forEach((t) => t.classList.remove('active'));
+      tab.classList.add('active');
+      segmentCards.forEach((c) => {
+        c.classList.toggle('active', c.getAttribute('data-segment') === activeSegment);
+      });
+      applyFilters();
+    });
+  });
+
+  searchInput.addEventListener('input', applyFilters);
+
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+    );
+    document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+  } else {
+    document.querySelectorAll('.reveal').forEach((el) => el.classList.add('visible'));
+  }
+
+  window.addEventListener('load', () => {
+    document.querySelectorAll('.segment-bar-fill').forEach((bar) => {
+      const w = bar.style.width;
+      bar.style.width = '0%';
+      requestAnimationFrame(() => {
+        setTimeout(() => { bar.style.width = w; }, 100);
+      });
+    });
+  });
+</script>
+
+</body>
+</html>
